@@ -1,6 +1,6 @@
  <script type="text/javascript">
     window.onload = function () {
-      document.getElementById('input_url').innerHTML = window.location.href;
+
       const onelinkGenerator =  new window.AF.OneLinkUrlGenerator(
         {oneLinkURL: "https://direct-app.onelink.me/hNTg",
          pidKeysList: ['pid', 'utm_source'], 
