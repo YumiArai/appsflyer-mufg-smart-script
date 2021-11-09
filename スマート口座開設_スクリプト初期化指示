@@ -1,10 +1,11 @@
- <script type="text/javascript">
+<script type="text/javascript">
     window.onload = function () {
 
+      console.log("test");
       const onelinkGenerator =  new window.AF.OneLinkUrlGenerator(
         {oneLinkURL: "https://mufg-kouza.onelink.me/dhBw/",
          pidKeysList: ['pid', 'utm_source'], 
-         pidStaticValue: 'MUFG_LP',   // 受信URLに pid, utm_source パラメが存在しない場合、メディアソース名の固定値として使用します。必要に応じて変更してください。
+         pidStaticValue: 'MUFG_KOUZA_LP',   // 受信URLに pid, utm_source パラメが存在しない場合、メディアソース名の固定値として使用します。必要に応じて変更してください。
          campaignKeysList: ['c', 'utm_campaign'],
          campaignStaticValue: 'LP_TOP'   // 受信URLに c, utm_campaign パラメが存在しない場合、キャンペーン名の固定値として使用します。必要に応じて変更してください。
       });
@@ -21,9 +22,12 @@
 
       // onelink is generated
         if (url) {
-        document.querySelectorAll("#andrd_link, #ios_link").forEach((e) => {
+          document.querySelectorAll("#andrd_link, #ios_link").forEach(function(e) {
             e.setAttribute('href', url);
-      }
+            e.onclick = function() {gtag_report_conversion(url);};
+          });
+        }
+
 
     };
   </script>
