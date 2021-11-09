@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="ja" class="t-simple">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>スマートフォンアプリでカンタン便利な口座開設 | 三菱ＵＦＪ銀行</title>
+<meta name="keywords" content="三菱ＵＦＪ,口座開設,スマホ,スマートフォン,アプリ,スマート口座開設,ダウンロード,来店不要、印鑑不要、保険証、健康保険証、簡単">
+<meta name="description" content="来店不要！ 印鑑不要！スマートフォンアプリでらくらく口座開設">
+
+<meta property="og:title" content="スマートフォンアプリでカンタン便利な口座開設 | 三菱ＵＦＪ銀行">
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://www.bk.mufg.jp/kouza/lp/shinseikatsu/index.html">
+<meta property="og:image" content="https://www.bk.mufg.jp/kouza/lp/shinseikatsu/img/ogp.png">
+<meta property="og:description" content="来店不要！「スマート口座開設」ならスマホでカンタン #口座開設！ #三菱ＵＦＪ銀行">
+<meta name="format-detection" content="telephone=no">
+<meta name="robots" content="noindex">
+<link rel="start" href="/" title="三菱ＵＦＪ銀行">
+
+<link rel="shortcut icon" sizes="16x16" href="/cmn/favicon.ico">
+<link rel="apple-touch-icon" sizes="192x192" href="/cmn/apple-touch-icon.png">
+<link rel="shortcut icon" sizes="192x192" href="/cmn/touch-icon.png">
+<link rel="stylesheet" href="/shared2019/css/main.css" media="all">
+<link rel="stylesheet" href="./css/style.css" media="all">
+<script src="/shared2019/js/jquery-3.3.1.min.js"></script>
+<script src="/shared2019/js/common.js"></script>
+<script src="./js/main.js"></script>
+
+ <script type="text/javascript">
+'use strict';
+
+class OneLinkUrlGenerator {
+    // TODO -  add params documentation
+    // oneLinkURL - your own basic OneLink URL
+    // ...
+    constructor({
+                    oneLinkURL,
+                    pidKeysList = [],
+                    pidStaticValue = null,
+                    campaignKeysList = [],
+                    campaignStaticValue = null,
+                    pidOverrideList = [],
+                    gclIdParam = 'af_sub5',
+                    skipList = ["facebook"]
+                } = {}) {
+
+        console.debug("Constructing OneLink URL generator")
+        if(oneLinkURL === undefined || typeof oneLinkURL !== "string" || oneLinkURL === "") {
+            console.error("OneLinkUrlGenerator: oneLinkURL arg invalid");
+            return null;
+        }
+
+        this.oneLinkURL = oneLinkURL;
+        this.pidOverrideList = pidOverrideList;
+        this.gclIdParam = gclIdParam;
+        this.pidKeysList = pidKeysList;
+        this.pidStaticValue = pidStaticValue;
+        this.campaignKeysList = campaignKeysList;
+        this.campaignStaticValue = campaignStaticValue;
+        this.skipList = skipList
+
+        // OneLink parameters
+        this.campaign = getCampaignValue(this.campaignKeysList, this.campaignStaticValue);
+        this.mediaSource = getMediaSourceValue(this.pidKeysList, this.pidStaticValue, this.pidOverrideList);
+
+        // af_js_web=true will be added to every URL that was generated through this script
+        this.afParams = {af_js_web: "true"};
+    }
+
+    generateUrl(){
+        if (this.mediaSource == null) {
+            console.debug("No valid pid value was found. URL will no be changed");
+            return null;
+        }
+
+        // User was redirected using af_r parameter on an AppsFlyer attribution link
+        if (getParameterFromURL('af_redirect')) {
+            console.debug("This user comes from AppsFlyer by redirection and is ready to be attributed. \nKeep direct app store links.");
+            return null; // in this case, the original store links in the install buttons stay the same
+        }
+
+        if (this.isSkipped()) {
+            console.debug("This URL is marked for skipping. The script will return null");
+            // the caller should make sure a return value of null will leave the original link
+            return null;
+        }
+
+        // Google Ads
+        let pidValue = this.mediaSource;
+        const gclIdValue = getParameterFromURL('gclid');
+
+        if (gclIdValue) {
+            this.afParams[this.gclIdParam] = gclIdValue
+            console.debug("This user comes from Google AdWords");
+
+            const kwValue = getParameterFromURL('keyword');
+            if (!!kwValue) {
+                this.afParams['af_keywords'] = kwValue;
+                console.debug("There is a keyword associated with the ad");
+            }
+        // Other SRNs, custom networks and organic installs
+        } else {
+            console.debug("This user comes from SRN or custom network ");
+        }
+        const finalURL = this.oneLinkURL + '?pid=' + pidValue + '&c=' + this.campaign + stringifyAfParameters(this.afParams);
+        console.debug(`Generated OneLink URL ${finalURL}`)
+        return finalURL;
+    }
+
+    // Should this URL be skipped base on the HTTP referrer and the skipList[]
+    isSkipped() {
+        if (document.referrer && document.referrer != "") {
+            for (var i=0; i<this.skipList.length; i++) {
+                const skipStr = this.skipList[i];
+                if (document.referrer.toLowerCase().includes(skipStr.toLowerCase())) {
+                    console.debug("Skipping the script. HTTP referrer has: " + skipStr);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    // Setters for AF params
+    setDeepLinkValue(deepLinkValueParam, deepLinkValue = null){
+        setGenericParameter(this.afParams, 'deep_link_value', deepLinkValueParam, deepLinkValue);
+    }
+
+    setChannel(channelParam, channelValue = null){
+        setGenericParameter(this.afParams, 'af_channel', channelParam, channelValue);
+    }
+
+    setAdset(adsetParam, adsetValue = null){
+        setGenericParameter(this.afParams, 'af_adset', adsetParam, adsetValue);
+    }
+
+    setAd(adParam, adValue = null){
+        setGenericParameter(this.afParams, 'af_ad', adParam, adValue);
+    }
+
+    setAfSub1(afSub1Param, afSub1Value = null){
+        setGenericParameter(this.afParams, 'af_sub1', afSub1Param, afSub1Value);
+    }
+
+    setAfSub2(afSub2Param, afSub2Value = null){
+        setGenericParameter(this.afParams, 'this.afParams, af_sub2', afSub2Param, afSub2Value);
+    }
+
+    setAfSub3(afSub3Param, afSub3Value = null){
+        setGenericParameter(this.afParams, 'af_sub3', afSub3Param, afSub3Value);
+    }
+
+    setAfSub4(afSub4Param, afSub4Value = null){
+        setGenericParameter(this.afParams, 'af_sub4', afSub4Param, afSub4Value);
+    }
+
+    setAfSub5(afSub5Param, afSub5Value = null){
+        setGenericParameter(this.afParams, 'af_sub5', afSub5Param, afSub5Value);
+    }
+
+    setCustomParameter(searchKey, customKey, customValue = null) {
+        setGenericParameter(this.afParams, customKey, searchKey, customValue);
+    }
+}
+
+// Statis state-less functions
+function getParameterFromURL(name) {
+    const url = window.location.href;
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ''));
+}
+
+function getMediaSourceValue(pidKeysList, pidStaticValue, pidOverrideList){
+    let pidValue = null;
+
+    for (let pidKey of pidKeysList){
+        if (pidKey != null && getParameterFromURL(pidKey)) {
+            pidValue = getParameterFromURL(pidKey);
+        }
+    }
+
+    if (pidValue != null) {
+        if(pidOverrideList.hasOwnProperty(pidValue)) 
+            pidValue = pidOverrideList[pidValue];
+    } else {
+        pidValue = pidStaticValue;
+    }
+    return pidValue;
+}
+
+function getCampaignValue(campaignKeysList, campaignStaticValue){
+    for (let campaignKey of campaignKeysList){
+        if (getParameterFromURL(campaignKey)) {
+            return getParameterFromURL(campaignKey);
+        }
+    }
+
+    if(campaignStaticValue != null) {
+        return campaignStaticValue;
+    }
+
+    if (!!document.getElementsByTagName('title')[0]) {
+        return document.getElementsByTagName('title')[0].innerText;
+    }
+    return 'unknown';
+}
+
+// Create a string of param and value from
+function stringifyAfParameters(afParams) {
+    let finalStr = "";
+
+    for (var key of Object.keys(afParams)) {
+        console.debug(key + "->" + afParams[key]);
+        if (afParams[key] != null) {
+            finalStr += `&${key}=${afParams[key]}`;
+        } 
+    }
+    return finalStr;
+}
+
+function setGenericParameter(afParams, oneLinkParam, searchKey, newParamValue = null) {
+    const searchKeyResult = getParameterFromURL(searchKey);
+    if (searchKeyResult) {
+        afParams[oneLinkParam] = searchKeyResult;
+        console.debug(`${searchKey} found. ${oneLinkParam} = ${searchKeyResult}`)
+    } else {
+        if (newParamValue != null) {
+            afParams[oneLinkParam] = newParamValue;
+            console.debug(`${searchKey} not found. ${oneLinkParam} = ${newParamValue}`)
+        } else {
+            console.debug(`${searchKey} not found and newParamValue is null. Skipping.`)
+        }
+    }
+}
+
+(function(){
+    window.AF = Object.assign((window.AF || {}),{OneLinkUrlGenerator: OneLinkUrlGenerator});
+})();
+
+  </script>
+
+<script type="text/javascript">
+    window.onload = function () {
+
+      console.log("test");
+      const onelinkGenerator =  new window.AF.OneLinkUrlGenerator(
+        {oneLinkURL: "https://mufg-kouza.onelink.me/dhBw/",
+         pidKeysList: ['pid', 'utm_source'], 
+         pidStaticValue: 'MUFG_LP',   // 受信URLに pid, utm_source パラメが存在しない場合、メディアソース名の固定値として使用します。必要に応じて変更してください。
+         campaignKeysList: ['c', 'utm_campaign'],
+         campaignStaticValue: 'LP_TOP'   // 受信URLに c, utm_campaign パラメが存在しない場合、キャンペーン名の固定値として使用します。必要に応じて変更してください。
+      });
+      
+      onelinkGenerator.setAdset("af_adset");
+      onelinkGenerator.setAd("af_ad");
+      onelinkGenerator.setCustomParameter("af_prt", "af_prt");
+      onelinkGenerator.setCustomParameter("af_dp", "af_dp");
+      onelinkGenerator.setCustomParameter("is_retargeting", "is_retargeting");
+
+      
+      
+      const url = onelinkGenerator.generateUrl();
+
+      // onelink is generated
+        if (url) {
+          document.querySelectorAll("#andrd_link, #ios_link").forEach(function(e) {
+            e.setAttribute('href', url);
+            e.onclick = function() {gtag_report_conversion(url);};
+          });
+        }
+
+
+    };
+  </script>
+
+<!-- Global site tag (gtag.js) - Google Ads: 957251125 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-957251125"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'AW-957251125');
+  gtag('config', 'AW-934209236');
+</script>
+
+<script>
+function gtag_report_conversion(url) {
+  var callback = function () {
+    if (typeof(url) != 'undefined') {
+      window.location = url;
+    }
+  };
+  {
+  gtag('event', 'conversion', {
+      'send_to': 'AW-934209236/UwL7CO7CqGMQ1M27vQM',
+      'event_callback': callback
+  }),
+  gtag('event', 'conversion', {
+      'send_to': 'AW-957251125/EOEcCOrt6eQBELX8ucgD',
+      'event_callback': callback
+  })};
+  return false;
+}
+</script>
+
+<script async src="https://s.yimg.jp/images/listing/tool/cv/ytag.js"></script>
+<script>
+window.yjDataLayer = window.yjDataLayer || [];
+function ytag() { yjDataLayer.push(arguments); }
+ytag({"type":"ycl_cookie"});
+</script>
+
+<!-- 
+Start of global snippet: Please do not remove
+Place this snippet between the <head> and </head> tags on every page of your site.
+-->
+<!-- Global site tag (gtag.js) - Google Marketing Platform -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=DC-10424491"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'DC-10424491');
+</script>
+<!-- End of global snippet: Please do not remove -->
+
+<!--
+Event snippet for RTG_mitsubishiUFJ_LP on : Please do not remove.
+Place this snippet on pages with events you’re tracking. 
+Creation date: 10/28/2020
+-->
+<script>
+  gtag('event', 'conversion', {
+    'allow_custom_scripts': true,
+    'send_to': 'DC-10424491/invmedia/rtg_m0+standard'
+  });
+</script>
+<noscript>
+<img src="https://ad.doubleclick.net/ddm/activity/src=10424491;type=invmedia;cat=rtg_m0;dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;npa=;gdpr=${GDPR};gdpr_consent=${GDPR_CONSENT_755};ord=1?" width="1" height="1" alt=""/>
+</noscript>
+<!-- End of event snippet: Please do not remove -->
+
+<!--
+Event snippet for CV_mitsubishiUFJ_appstore on : Please do not remove.
+Place this snippet on pages with events you’re tracking. 
+Creation date: 10/26/2020
+-->
+<script>
+  gtag('event', 'conversion', {
+    'allow_custom_scripts': true,
+    'send_to': 'DC-10424491/invmedia/cv_mi00+standard'
+  });
+</script>
+<noscript>
+<img src="https://ad.doubleclick.net/ddm/activity/src=10424491;type=invmedia;cat=cv_mi00;dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;npa=;gdpr=${GDPR};gdpr_consent=${GDPR_CONSENT_755};ord=1?" width="1" height="1" alt=""/>
+</noscript>
+<!-- End of event snippet: Please do not remove -->
+
+<meta name="last-modified" content="2021.10.08">
+</head>
+<body class="isInit lp-body">
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-WK86MFJ');</script>
+<!-- End Google Tag Manager -->
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WK86MFJ" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+<noscript>
+<div class="o-container">
+<div class="o-inner">
+<div class="o-box-noscript">
+<p class="a-color-red">当サイトではJavaScriptを使用していますが、お使いのブラウザではJavaScriptが無効に設定されています。<br>JavaScriptの設定を有効にしてご利用ください。</p>
+</div>
+</div>
+</div>
+</noscript>
+<!--// t-wrapper //-->
+<div id="wrapper">
+<!--// t-header //-->
+<header class="header">
+	<div class="header-left">
+		<a href="/index.html" class="header-id"><img src="./img/header_logo.png" alt="MUFG"></a>
+		<div class="header-bank"><img src="./img/header_name.png" alt="三菱ＵＦＪ銀行"></div>
+	</div>
+	<div class="header-right">
+		<div class="header-mark">
+			<a
+      
+      
+      href="https://www.bk.mufg.jp/hop_step_japan/index.html" data-sp-href="/sp/hop_step_japan/index.html" class="js-hrefchange">
+				<img src="./img/header_mark.png" alt="HOP！STEP！JAPAN！">
+			</a>
+		</div>
+	</div>
+</header>
+<!--// /t-header //-->
+
+<!-- ▼▼▼▼▼▼▼▼▼▼▼▼▼▼ コンテンツ ▼▼▼▼▼▼▼▼▼▼▼▼▼▼ --->
+<main>
+  <div class="mv -ver2">
+    <div class="mv-img">
+      <h1><img class="w-max-100 pc" src="./img/mv_02_pc.png" alt="いつでもどこでもアプリでカンタン口座開設"></h1>
+      <h1><img class="w-max-100 sp" src="./img/mv_02_sp.png" alt="いつでもどこでもアプリでカンタン口座開設"></h1>
+    </div>
+  </div><!-- mv -->
+
+  <div class="main-wrapper">
+    <section class="app-banner">
+      <div class="app-box">
+        <h2><img src="img/app-title_pc.png" alt="アプリでカンタン口座開設" class="pc_sp"></h2>
+        <div class="app-content clearfix">
+          <p class="lead"><img src="img/app-lead_pc_02.png" alt="ダウンロードはこちら" class="pc_sp"></p>
+          <div class="app-apple">
+            <p class="btn"><img src="img/app-qr1.png" alt="App Store QRコード" class="qr"><a id="ios_link" onclick="return gtag_report_conversion('https://itunes.apple.com/jp/app/id1139979990?');" href="https://itunes.apple.com/jp/app/id1139979990?" target="_blank"><img src="img/app-btn-apple.png" alt="Download on the AppStore" class="btn-hover"></a></p>
+          </div>
+          <div class="app-google">
+            <p class="btn"><img src="img/app-qr2.png" alt="Google Play QRコード" class="qr"><a id="andrd_link" onclick="return gtag_report_conversion('https://
+            com/store/apps/details?id=jp.mufg.bk.openaccount.app');" href="https://play.google.com/store/apps/details?id=jp.mufg.bk.openaccount.app" target="_blank"><img src="img/app-btn-google.png" alt="GET IT ON Google Play" class="btn-hover"></a></p>
+          </div>
+        </div>
+      </div>
+    </section><!-- app-banner -->
+
+    <nav class="acn-wrapper">
+      <ul class="anc-block">
+        <li class="btn-hover anc-item"><a href="#anc03">三菱ＵＦＪ銀行なら<br class="a-sp">こんなに便利</a></li>
+        <li class="btn-hover anc-item"><a href="#anc04">アプリでの<br class="a-sp">口座開設手順</a></li>
+      </ul>
+    </nav><!-- /.acn-wrapper -->
+
+    <section class="convenient-banner">
+      <h2><img src="img/convenient-title_pc_02.png" alt="「口座開設」は アプリがカンタン便利！" class="pc_sp"></h2>
+      <div class="convenient_box clearfix">
+        <div class="convenient_box_text">
+          <p class="lead"><img src="img/convenient-lead1_pc.png" alt="来店不要！" class="pc_sp"></p>
+          <p>窓口に行かなくてもスマートフォンだけで申込完了。</p>
+        </div>
+        <p class="icon"><img src="img/convenient-icon.png" alt="アイコン"></p>
+      </div>
+      <div class="clearfix">
+        <div class="convenient_box_left">
+          <p class="lead"><img src="img/convenient-lead2_pc.png" alt="印鑑不要！" class="pc_sp"></p>
+          <p>口座開設時の印鑑のお届出が不要。</p>
+        </div>
+        <div class="convenient_box_right">
+          <p class="lead"><img src="img/convenient-lead3_pc.png" alt="最短翌営業日に口座開設！" class="pc_sp"></p>
+          <p>アプリへ口座番号を通知。</p>
+        </div>
+      </div>
+
+      <div class="app-banner -content">
+        <div class="app-box">
+          <h2><img src="img/app-title_pc_02.png" alt="アプリでカンタン口座開設" class="pc_sp"></h2>
+          <div class="app-content clearfix">
+            <p class="lead"><img src="img/app-lead_pc_02.png" alt="ダウンロードはこちら" class="pc_sp"></p>
+            <div class="app-apple">
+              <p class="btn"><img src="img/app-qr1.png" alt="App Store QRコード" class="qr"><a id="ios_link" onclick="return gtag_report_conversion('https://itunes.apple.com/jp/app/id1139979990?');" href="https://itunes.apple.com/jp/app/id1139979990?" target="_blank"><img src="img/app-btn-apple.png" alt="Download on the AppStore" class="btn-hover"></a></p>
+            </div>
+            <div class="app-google">
+              <p class="btn"><img src="img/app-qr2.png" alt="Google Play QRコード" class="qr"><a id="andrd_link" onclick="return gtag_report_conversion('https://play.google.com/store/apps/details?id=jp.mufg.bk.openaccount.app');" href="https://play.google.com/store/apps/details?id=jp.mufg.bk.openaccount.app" target="_blank"><img src="img/app-btn-google.png" alt="GET IT ON Google Play" class="btn-hover"></a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="app-text-wrapper">
+        <ul class="m-collist">
+          <li><a href="https://www.bk.mufg.jp/kouza/smartkouza/introduction.html" class="a-ico_arw-r">Webでの開設はこちら</a></li>
+        </ul>
+        <p class="a-fz-s">アプリ・Webでの口座開設は以下に該当する方がご利用いただけます。</p>
+        <p class="a-fz-xs"><span class="a-color-pink">●</span>当行口座をお持ちでない15歳以上の個人の方　<br class="a-sp"><span class="a-color-pink">●</span>国内に居住で日本国籍をお持ちの方　<br class="a-sp"><span class="a-color-pink">●</span>現住所が記載された運転免許証・マイナンバーカードをお持ちの方</p>
+        <ul class="m-collist">
+          <li><a href="https://www.bk.mufg.jp/kouza/order/index.html" class="a-ico_arw-r">アプリ・Webをご利用できない方はこちら</a></li>
+        </ul>
+      </div><!-- /.app-text-wrapper -->
+    </section><!-- convenient-banner -->
+
+    <section class="convenient-contents" id="anc03">
+      <div class="convenient-contents-inner">
+        <h2><img src="img/conv-contents-title_sp.png" alt="三菱ＵＦＪ銀行なら、こんなに便利！" class="pc_sp"></h2>
+        
+        <div class="content-box">
+          <h3>当行ATMの利用手数料が無料に!<br>さらに他行あて振込手数料もおトク!!</h3>
+          <div class="top-text">
+            <p class="lead">スーパー普通預金(メインバンク プラス)</p>
+            <div class="clm2wrap a-margin-t3 a-margin-sp-t1_3">
+              <div class="clm-item a-padding-r3 -img"><img src="img/img_ponta_point_pc.png" alt=""></div><!-- /.clm-item -->
+              <div class="clm-item">
+                <p class="a-margin-b1_2">Eco通帳のご利用等でATM利用手数料や振込手数料がおトクに！<br>さらに、銀行のお取引内容に応じ<strong class="a-color-yellow">Pontaポイント</strong>が毎月たまります。</p>
+                <div class="a-pc">
+                  <p class="a-color-red a-fz-xs">※「三菱ＵＦＪダイレクト」のご利用（ログインパスワード・Eメールアドレス登録）が必要です。</p>
+                  <p class="a-color-red a-fz-xs">※Pontaポイントをためるには、ポイントサービスのお申し込みが必要です。</p>
+                </div><!-- /.a-pc -->
+              </div><!-- /.clm-item -->
+            </div><!-- /.clm2wrap -->
+            <div class="a-sp a-tx-indent">
+              <p class="a-color-red a-fz-xs">※「三菱ＵＦＪダイレクト」のご利用（ログインパスワード・Eメールアドレス登録）が必要です。</p>
+              <p class="a-color-red a-fz-xs">※Pontaポイントをためるには、ポイントサービスのお申し込みが必要です。</p>
+            </div><!-- /.a-pc -->
+          </div>
+          <p class="pic"><img src="img/conv-contents-pic1_pc_v2.png" alt="仕事の休憩時間にスマホで振り込みしよっと。手数料がおトクに振り込みできてうれしい！ いつも使っている銀行で取引するたびPontaポイントがたまってうれしい！" class="pc_sp"></p>
+          <div class="accordion">
+            <div class="accordion-inner">
+              <div class="m-anchor m-anchor-bg a-margin-b4">
+                <ul class="o-grid o-grid-anchor o-grid-6 m-anchor-list">
+                  <li><a href="#anc01" class="a-ico_arw-b js-scroll">&#9312;手数料優遇</a></li>
+                  <li><a href="#anc02" class="a-ico_arw-b js-scroll">&#9313;ポイントサービス</a></li>
+                </ul>
+              </div>
+              <h4 id="anc01">&#9312;メインバンク プラスでの手数料優遇内容</h4>
+              <div class="table richtext base m-GridColumn m-GridColumn--default--12">
+                <div class="richtext a-margin-t2  m-table-wrap m-table-wrap-left  ">
+                  <table><tbody><tr><th width="25%" style="text-align: left;">判定日</th>
+                  <td>毎月末平日窓口営業日</td>
+                  </tr><tr><th>優遇期間</th>
+                  <td>判定日の翌月20日から翌々月19日まで</td>
+                  </tr></tbody></table>
+                </div>
+              </div>
+              <p class="a-margin-t3 a-margin-b3"><img src="img/accordion1-pic16_pc.jpg" alt="メインバンク プラスでの手数料優遇内容" class="pc_sp"></p>
+              <div class="list base m-GridColumn m-GridColumn--default--12">
+                <div class="a-margin-t1">
+                  <ol class="m-collist m-collist-notes m-collist-notes-mark1 m-collist-left">
+                    <li><span class=" a-fz-s">給与・年金のお受け取りは１回あたり10万円以上/月が対象。年金は、判定月の当月、または前月のお受け取りが条件。</span></li>
+                    <li><span class=" a-fz-s">給与は、Eco通帳の入出金明細もしくは通帳の摘要欄に「給料」または「賞与」と記載があるものが対象。</span></li>
+                    <li><span class=" a-fz-s">年金は、Eco通帳の入出金明細もしくは通帳の摘要欄に「年金」と記載があるものが対象。</span></li>
+                    <li><span class=" a-fz-s">70歳以上のお客さまは、上記条件に該当しなくとも三菱ＵＦＪ銀行ATM利用手数料が何回でも無料。<br />また、三菱ＵＦＪダイレクトのご利用がない場合でも、条件項目の充足により優遇を適用します。</span></li>
+                    <li><span class=" a-fz-s">テレフォンバンキング（オペレーター対応）での他行あて振込は優遇の対象外。</span></li>
+                  </ol>
+                </div>
+              </div>
+              <div class="richtext base m-GridColumn m-GridColumn--default--12">
+                <div class="richtext m-indent">
+                  <span class="m-indent_mark"><span class="a-fz-s">※</span></span><span class="a-fz-s">ATM利用手数料は、メインバンク プラスの手数料優遇がなくても、無料でご利用いただける時間帯がございます。くわしくは<a href="https://www.bk.mufg.jp/tesuuryou/atm/new.html">こちら</a>をご確認ください。</span>
+                </div>
+              </div>
+              <p class="a-margin-t3 a-margin-b4"><img src="img/accordion1-lead2_pc.png" alt="提携先コンビニATM" class="pc_sp"></p>
+              <h4 id="anc02" class="a-margin-t2">&#9313;Pontaポイントがたまる！ポイントサービス</h4>
+              <div class="table richtext base m-GridColumn m-GridColumn--default--12">
+                <div class="richtext a-margin-t2  m-table-wrap m-table-wrap-left  ">
+                  <table><tbody><tr><th width="25%" style="text-align: left;">判定日</th>
+                  <td>毎月末平日窓口営業日（*）</td>
+                  </tr><tr><th>ポイント加算時期</th>
+                  <td>判定日の翌月末頃</td>
+                  </tr></tbody></table>
+                </div>
+              </div>
+              <div class="list base m-GridColumn m-GridColumn--default--12">
+                <div class="a-margin-t1">
+                  <ol class="m-collist m-collist-indent m-collist-notes m-collist-left">
+                    <li><span class="m-collist_ico">（*）</span><span class=" a-fz-s">三菱ＵＦＪダイレクトログイン・口座振替は、土日祝日を含む月末までのお取引を反映します。</span></li>
+                  </ol>
+                </div>
+              </div>
+              <p class="a-margin-t3 a-margin-b3"><img src="img/accordion1-pic17_pc.png" alt="メインバンク プラスのポイントサービス" class="pc_sp"></p>
+              <div class="richtext base m-GridColumn m-GridColumn--default--12">
+                <div class="richtext a-margin-t2 ">
+                  <ul class="m-collist m-collist-notes m-collist-notes-num2 m-collist-left">
+                    <li><span class="a-fz-s">月内に一度でも三菱ＵＦＪダイレクトにログインすれば対象となります。</span></li>
+                    <li>
+                      <span class="a-fz-s">月内に一度でも三菱ＵＦＪデビット（VISA・JCB）、クレジットカード等当行が定める口座振替の引き落としがあれば対象となります。当行が定める口座振替は、「Pontaポイント加算対象となる口座振替」をご確認ください。</span>
+                      <p class="a-text-left">
+                        &gt;<a href="https://www.bk.mufg.jp/kouza/yugu/mb/pointservice/index.html#account">Pontaポイント加算対象となる口座振替についてくわしくはこちら</a>
+                      </p>
+                    </li>
+                    <li><span class="a-fz-s">運用商品残高は、外貨預金、投資信託、公共債、金融商品仲介、MUFGファンドラップの月末合計残高が50万円以上の場合対象となります。</span></li>
+                    <li><span class="a-fz-s">投信つみたて（継続購入プラン）と外貨つみたて（外貨貯蓄預金「継続預入プラン」）のご利用で月内に自動振替が行われた金額合計1万円ごとに、合算で上限300Pontaポイント/月まで、ポイント加算の対象となります。<br>なお、投信つみたて（継続購入プラン）で購入価額（基準価額）の確定が翌月となった場合は、購入価額（基準価額）が確定した月の実績とみなします。<br>
+また、外貨つみたて振替日末日指定で末日が銀行休業日により振替が翌月（翌月第１平日窓口営業日）となった場合は、翌月の実績となります。</span></li>
+                    <li><span class="a-fz-s">月末時点でお借入残高がある場合対象となります。</span></li>
+                  </ul>
+                  <ul class="a-margin-t1 m-collist m-collist-notes m-collist-notes-mark1">
+                    <li><span class="a-fz-s">Pontaは（株）ロイヤリティ マーケティングが運営するサービスです。</span></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="a-margin-t2 a-margin-b3">
+                <p class="a-text-left p-fz-normal-sp">
+                  &gt;<a href="https://www.bk.mufg.jp/kouza/yugu/mb/index.html">スーパー普通預金（メインバンク プラス）についてくわしくはこちら</a>
+                </p>
+              </div>
+            </div>
+            <p class="accordion-btn btn-hover open" data-accordion="accordion01">Pontaポイントもたまる！<br class="a-sp">おトクな手数料優遇はこちら</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="convenient-contents -app">
+      <div class="convenient-contents-inner">
+        <div class="app-box-wrap">
+          <div class="app-banner -content">
+            <div class="app-box">
+              <h2><img src="img/app-title_pc_02.png" alt="アプリでカンタン口座開設" class="pc_sp"></h2>
+              <div class="app-content clearfix">
+                <p class="lead"><img src="img/app-lead_pc_02.png" alt="ダウンロードはこちら" class="pc_sp"></p>
+                <div class="app-apple">
+                  <p class="btn"><img src="img/app-qr1.png" alt="App Store QRコード" class="qr"><a id="ios_link" onclick="return gtag_report_conversion('https://itunes.apple.com/jp/app/id1139979990?');" href="https://itunes.apple.com/jp/app/id1139979990?" target="_blank"><img src="img/app-btn-apple.png" alt="Download on the AppStore" class="btn-hover"></a></p>
+                </div>
+                <div class="app-google">
+                  <p class="btn"><img src="img/app-qr2.png" alt="Google Play QRコード" class="qr"><a id="andrd_link" onclick="return gtag_report_conversion('https://play.google.com/store/apps/details?id=jp.mufg.bk.openaccount.app');" href="https://play.google.com/store/apps/details?id=jp.mufg.bk.openaccount.app" target="_blank"><img src="img/app-btn-google.png" alt="GET IT ON Google Play" class="btn-hover"></a></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="app-text-wrapper">
+            <ul class="m-collist">
+              <li><a href="https://www.bk.mufg.jp/kouza/smartkouza/introduction.html" class="a-ico_arw-r">Webでの開設はこちら</a></li>
+            </ul>
+            <p class="a-fz-s">アプリ・Webでの口座開設は以下に該当する方がご利用いただけます。</p>
+            <p class="a-fz-xs"><span class="a-color-pink">●</span>当行口座をお持ちでない15歳以上の個人の方　<br class="a-sp"><span class="a-color-pink">●</span>国内に居住で日本国籍をお持ちの方　<br class="a-sp"><span class="a-color-pink">●</span>現住所が記載された運転免許証・マイナンバーカードをお持ちの方</p>
+            <ul class="m-collist">
+              <li><a href="https://www.bk.mufg.jp/kouza/order/index.html" class="a-ico_arw-r">アプリ・Webをご利用できない方はこちら</a></li>
+            </ul>
+          </div><!-- /.app-text-wrapper -->
+        </div><!-- /.app-box-wrap -->
+      </div>
+    </section>
+
+    <section class="convenient-contents">
+      <div class="convenient-contents-inner">
+        <div class="content-box">
+          <h3>
+            ATM設置台数77,000台<sup>（*1）</sup><br>三井住友銀行の店舗外ATMも<br class="sp">手数料無料で利用可能!
+            <ol class="m-collist m-collist-notes m-collist-notes-mark1 m-collist-left m-collist-center -sp-custom">
+              <li class="a-fz-s"><span>三井住友銀行の対象ATMコーナーには、店舗入口等に識別ステッカーを掲出しています。</span></li>
+            </ol>
+          </h3>
+          <div class="top-text">
+            <p class="lead">充実のネットワーク</p>
+            <p>当行ATMのほか、コンビ二や提携先ATMも充実。 さらに三井住友銀行の店舗外ATMも時間内なら無料でご利用いただけるようになりました。</p>
+          </div>
+          <p class="pic"><img src="img/conv-contents-pic2_pc.png" alt="これから友達と待ち合わせ。　ふと財布を見ると、ヤバイ…手持ちがない！　焦ったけど、すぐにATM発見！　助かった！" class="pc_sp"></p>
+          <p class="link-btn"><a href="https://map.bk.mufg.jp/b/bk_mufg/" target="_blank" class="btn-hover">ATM・店舗検索をする</a></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="convenient-contents -app">
+      <div class="convenient-contents-inner">
+        <div class="app-box-wrap">
+          <div class="app-banner -content">
+            <div class="app-box">
+              <h2><img src="img/app-title_pc_02.png" alt="アプリでカンタン口座開設" class="pc_sp"></h2>
+              <div class="app-content clearfix">
+                <p class="lead"><img src="img/app-lead_pc_02.png" alt="ダウンロードはこちら" class="pc_sp"></p>
+                <div class="app-apple">
+                  <p class="btn"><img src="img/app-qr1.png" alt="App Store QRコード" class="qr"><a id="ios_link" onclick="return gtag_report_conversion('https://itunes.apple.com/jp/app/id1139979990?');" href="https://itunes.apple.com/jp/app/id1139979990?" target="_blank"><img src="img/app-btn-apple.png" alt="Download on the AppStore" class="btn-hover"></a></p>
+                </div>
+                <div class="app-google">
+                  <p class="btn"><img src="img/app-qr2.png" alt="Google Play QRコード" class="qr"><a onclick="return gtag_report_conversion('https://play.google.com/store/apps/details?id=jp.mufg.bk.openaccount.app');" href="https://play.google.com/store/apps/details?id=jp.mufg.bk.openaccount.app" target="_blank"><img src="img/app-btn-google.png" alt="GET IT ON Google Play" class="btn-hover"></a></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="app-text-wrapper">
+            <ul class="m-collist">
+              <li><a href="https://www.bk.mufg.jp/kouza/smartkouza/introduction.html" class="a-ico_arw-r">Webでの開設はこちら</a></li>
+            </ul>
+            <p class="a-fz-s">アプリ・Webでの口座開設は以下に該当する方がご利用いただけます。</p>
+            <p class="a-fz-xs"><span class="a-color-pink">●</span>当行口座をお持ちでない15歳以上の個人の方　<br class="a-sp"><span class="a-color-pink">●</span>国内に居住で日本国籍をお持ちの方　<br class="a-sp"><span class="a-color-pink">●</span>現住所が記載された運転免許証・マイナンバーカードをお持ちの方</p>
+            <ul class="m-collist">
+              <li><a href="https://www.bk.mufg.jp/kouza/order/index.html" class="a-ico_arw-r">アプリ・Webをご利用できない方はこちら</a></li>
+            </ul>
+          </div><!-- /.app-text-wrapper -->
+        </div><!-- /.app-box-wrap -->
+      </div>
+    </section>
+
+    <section class="convenient-contents">
+      <div class="convenient-contents-inner">
+        <div class="content-box">
+          <h3>来店不要!スマホの中に銀行を</h3>
+          <div class="top-text">
+            <p class="lead">三菱ＵＦＪダイレクト（インターネットバンキング）</p>
+            <p>24時間365日、残高照会・振込から住所変更まで、銀行の手続きのほとんどがスマホでできます！</p>
+            <p class="illust"><img src="img/conv-contents-illust1.png" alt="インターネットバンキング"></p>
+          </div>
+          <p class="pic"><img src="img/conv-contents-pic3_pc.png" alt="あっ、今日クレジットの引落日だった!　残高あったっけ...よかった、ちゃんと引き落としできてた!　スマホでいつでも確認できるって便利!" class="pc_sp"></p>
+          <div class="accordion">
+            <div class="accordion-inner">
+              <h4>三菱ＵＦＪダイレクトなら、<br>こんなに便利でおトク！</h4>
+              <div class="clearfix">
+                <p class="lead-box-left"><img src="img/accordion1-pic6_pc.png" alt="残高や入出金明細が24時間いつでも確認できる！" class="pc_sp"></p>
+                <p class="lead-box-right"><img src="img/accordion1-pic7_pc.png" alt="当行宛ての振込手数料が0円！" class="pc_sp"></p>
+              </div>
+              <div class="clearfix">
+                <p class="lead-box-left"><img src="img/accordion1-pic8_pc.png" alt="税金や公共料金、各種料金をかんたんに支払える！" class="pc_sp"></p>
+                <p class="lead-box-right"><img src="img/accordion1-pic9_pc.png" alt="カンタンに住所・電話番号変更のお手続きができる！" class="pc_sp"></p>
+              </div>
+              <p class="lead-box"><img src="img/accordion1-pic10_pc.png" alt="24時間365日、ご自宅で投資信託のお取引ができる！" class="pc_sp"></p>
+              <p class="text-link p-fz-normal-sp">＞<a href="https://direct.bk.mufg.jp/btm/ser_naiyo/index.html?link_id=direct_top_service_2" target="_blank">ご利用時間・サービス内容一覧はこちら</a><span class="a-ico_newwin"></span></p>
+            </div>
+            <p class="accordion-btn btn-hover open" data-accordion="accordion02">三菱ＵＦＪダイレクトなら、<br class="a-sp">こんなに便利でおトク！</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="convenient-contents -app">
+      <div class="convenient-contents-inner">
+        <div class="app-box-wrap">
+          <div class="app-banner -content">
+            <div class="app-box">
+              <h2><img src="img/app-title_pc_02.png" alt="アプリでカンタン口座開設" class="pc_sp"></h2>
+              <div class="app-content clearfix">
+                <p class="lead"><img src="img/app-lead_pc_02.png" alt="ダウンロードはこちら" class="pc_sp"></p>
+                <div class="app-apple">
+                  <p class="btn"><img src="img/app-qr1.png" alt="App Store QRコード" class="qr"><a id="ios_link" onclick="return gtag_report_conversion('https://itunes.apple.com/jp/app/id1139979990?');" href="https://itunes.apple.com/jp/app/id1139979990?" target="_blank"><img src="img/app-btn-apple.png" alt="Download on the AppStore" class="btn-hover"></a></p>
+                </div>
+                <div class="app-google">
+                  <p class="btn"><img src="img/app-qr2.png" alt="Google Play QRコード" class="qr"><a onclick="return gtag_report_conversion('https://play.google.com/store/apps/details?id=jp.mufg.bk.openaccount.app');" href="https://play.google.com/store/apps/details?id=jp.mufg.bk.openaccount.app" target="_blank"><img src="img/app-btn-google.png" alt="GET IT ON Google Play" class="btn-hover"></a></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="app-text-wrapper">
+            <ul class="m-collist">
+              <li><a href="https://www.bk.mufg.jp/kouza/smartkouza/introduction.html" class="a-ico_arw-r">Webでの開設はこちら</a></li>
+            </ul>
+            <p class="a-fz-s">アプリ・Webでの口座開設は以下に該当する方がご利用いただけます。</p>
+            <p class="a-fz-xs"><span class="a-color-pink">●</span>当行口座をお持ちでない15歳以上の個人の方　<br class="a-sp"><span class="a-color-pink">●</span>国内に居住で日本国籍をお持ちの方　<br class="a-sp"><span class="a-color-pink">●</span>現住所が記載された運転免許証・マイナンバーカードをお持ちの方</p>
+            <ul class="m-collist">
+              <li><a href="https://www.bk.mufg.jp/kouza/order/index.html" class="a-ico_arw-r">アプリ・Webをご利用できない方はこちら</a></li>
+            </ul>
+          </div><!-- /.app-text-wrapper -->
+        </div><!-- /.app-box-wrap -->
+      </div>
+    </section>
+
+    <section class="convenient-contents">
+      <div class="convenient-contents-inner">
+        <div class="content-box">
+          <h3>キャッシュレスデビューにピッタリ!<br>使いすぎない安心をお財布に</h3>
+          <div class="top-text">
+            <p class="lead">三菱ＵＦＪデビット</p>
+            <div class="text">
+              <p><span class="big">年会費無料！</span></p>
+              <p>使ったその場で引き落とし、現金みたいに使えるカード。 使いすぎの心配がなく、日々のお買い物が小銭要らず。 海外のATMで現地通貨の引き出しもできる。<sup>（*2）</sup></p>
+            </div>
+            <p class="illust"><img src="img/credit-box-title02.png" alt="使ったその場で引き落とし、現金みたいに使えるカード。 使いすぎの心配がなく、日々のお買い物が小銭要らず。 海外のATMで現地通貨の引き出しもできる。"></p>
+          </div>
+          <p class="pic"><img src="img/credit-pic1_pc_v2.png" alt="ちょっとした買い物もキャッシュレスでスマートに支払いをしたいけど、気づいたら使いすぎてた!なんてことが…口座から直接引き落としで、使いすぎの心配がないって安心!" class="pc_sp"></p>
+          <div class="accordion">
+            <div class="accordion-inner">
+              <h4>三菱ＵＦＪデビットの便利な５つの特徴</h4>
+              <ul>
+                <li class="a-margin-b2"><img src="img/accordion1-pic11_pc.png" alt="現金感覚でお買い物。ATMの利用回数を減らせます ・現金でのお支払いの代わりに使えば、ATMの利用回数を減らせる ・おつりのやりとりも不要。スマートに支払いができる" class="pc_sp"></li>
+                <li class="a-margin-b2"><img src="img/accordion1-pic12_pc.png" alt="口座から直接引き落とし。お金の管理が上手に ・使った分だけ口座から即時払い。使い過ぎの心配なし ・使うたび「お知らせメール」が届き、スマートフォンやパソコンで利用履歴をカンタンに確認 ・利用限度額を設定できるので、お金の管理もしっかり" class="pc_sp"></li>
+                <li class="a-margin-b2"><img src="img/accordion1-pic13_pc.png" alt="国内外さまざまなお店やネットショッピングで使えます ・コンビニやレストラン、ネットショップなど国内外のVISA･JCBが使えるお店で使える・海外のATMで現地通貨を引き出せる" class="pc_sp"></li>
+                <li class="a-margin-b2"><img src="img/accordion1-pic14_pc.png" alt="現金での支払いよりもおトク ・使った金額に応じて、キャッシュバックがあるので、現金よりおトク" class="pc_sp"></li>
+                <li class="a-margin-b3"><img src="img/accordion1-pic15_pc.png" alt="三菱ＵＦＪデビットならではの安心 ・「ショッピング保険」や「不正利用補償」がついていて安心" class="pc_sp"></li>
+              </ul>
+              <p class="text-link p-fz-normal-sp">＞<a href="https://www.bk.mufg.jp/tsukau/debit/lp/201802/index.html" target="_blank">くわしくはこちら</a><span class="a-ico_newwin"></span></p>
+            </div>
+            <p class="accordion-btn btn-hover open" data-accordion="accordion03">三菱ＵＦＪデビットの便利な５つの特徴</p>
+            <!-- 2021/10/01 releas banner start -->
+            <p class="a-margin-t4"><a href="https://www.bk.mufg.jp/info_cam/202110_debit/index1.html?link_id=r_kouza_debitcp_lp3" target="_blank"><img src="./img/credit-box-bnr01.jpg" alt="三菱ＵＦＪデビット新規ご入会者限定キャンペーンもれなく最大1000円プレゼント" class="btn-hover"></a></p>
+            <!-- 2021/10/01 releas banner end -->
+          </div>
+        </div>
+      </div>
+    </section><!-- convenient-contents -->
+
+    <section class="convenient-contents -app -gray">
+      <div class="convenient-contents-inner">
+        <div class="app-box-wrap">
+          <div class="app-banner -content">
+            <div class="app-box">
+              <h2><img src="img/app-title_pc_02.png" alt="アプリでカンタン口座開設" class="pc_sp"></h2>
+              <div class="app-content clearfix">
+                <p class="lead"><img src="img/app-lead_pc_02.png" alt="ダウンロードはこちら" class="pc_sp"></p>
+                <div class="app-apple">
+                  <p class="btn"><img src="img/app-qr1.png" alt="App Store QRコード" class="qr"><a id="ios_link" onclick="return gtag_report_conversion('https://itunes.apple.com/jp/app/id1139979990?');" href="https://itunes.apple.com/jp/app/id1139979990?" target="_blank"><img src="img/app-btn-apple.png" alt="Download on the AppStore" class="btn-hover"></a></p>
+                </div>
+                <div class="app-google">
+                  <p class="btn"><img src="img/app-qr2.png" alt="Google Play QRコード" class="qr"><a onclick="return gtag_report_conversion('https://play.google.com/store/apps/details?id=jp.mufg.bk.openaccount.app');" href="https://play.google.com/store/apps/details?id=jp.mufg.bk.openaccount.app" target="_blank"><img src="img/app-btn-google.png" alt="GET IT ON Google Play" class="btn-hover"></a></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="app-text-wrapper">
+            <ul class="m-collist">
+              <li><a href="https://www.bk.mufg.jp/kouza/smartkouza/introduction.html" class="a-ico_arw-r">Webでの開設はこちら</a></li>
+            </ul>
+            <p class="a-fz-s">アプリ・Webでの口座開設は以下に該当する方がご利用いただけます。</p>
+            <p class="a-fz-xs"><span class="a-color-pink">●</span>当行口座をお持ちでない15歳以上の個人の方　<br class="a-sp"><span class="a-color-pink">●</span>国内に居住で日本国籍をお持ちの方　<br class="a-sp"><span class="a-color-pink">●</span>現住所が記載された運転免許証・マイナンバーカードをお持ちの方</p>
+            <ul class="m-collist">
+              <li><a href="https://www.bk.mufg.jp/kouza/order/index.html" class="a-ico_arw-r">アプリ・Webをご利用できない方はこちら</a></li>
+            </ul>
+          </div><!-- /.app-text-wrapper -->
+        </div><!-- /.app-box-wrap -->
+      </div>
+    </section>
+
+    <section class="step" id="anc04">
+      <h2><img src="img/step-title_pc.png" alt="カンタン3ステップ！ スマートフォンアプリでの口座開設の手順" class="pc_sp"></h2>
+      <p class="lead">お手元にスマートフォンと本人確認書類をご用意ください。</p>
+      <p class="flow"><img src="img/step-pic_pc.png" alt="STEP1 公式スマートフォンアプリ「スマート口座開設」をダウンロード／STEP2 ご自身の写真と本人確認書類をスマートフォンで撮影してください／STEP3 画面にしたがってお客さま情報等を入力してください" class="pc_sp"></p>
+      <div class="note">
+        <h3>【スマート口座開設アプリのご留意事項】</h3>
+        <dl>
+          <dt>●本アプリでの口座開設は以下に該当する方がご利用いただけます。</dt>
+          <dd>
+            <ul>
+              <li>・当行口座をお持ちでない15歳以上の個人の方</li>
+              <li>・国内に居住で日本国籍をお持ちの方</li>
+              <li>・現住所が記載された運転免許証・マイナンバーカードをお持ちの方</li>
+              <li>・ショートメッセージ（SMS）が受取可能な携帯電話をお持ちの方</li>
+            </ul>
+          </dd>
+          <dt>●本アプリで開設した口座は、以下のサービスが同時申し込みとなります。</dt>
+          <dd>
+            <ul>
+              <li>・スーパー普通預金（メインバンク プラス）〔段階金利型〕</li>
+              <li>・三菱ＵＦＪダイレクト（インターネットバンキング）</li>
+              <li>・Eco通帳（インターネット通帳）<br>※紙の通帳は発行されません。</li>
+              <li>・三菱ＵＦＪデビット</li>
+            </ul>
+          </dd>
+          <dt>●本アプリで開設した口座は印鑑レス（印鑑不要）口座となります。開設後の窓口でのお取引も印鑑は不要です。</dt>
+          <dd></dd>
+          <dt>●口座開設の申込完了後、お届出住所宛に転送不要扱い（簡易書留郵便）、最短5日でキャッシュカードを発送します。</dt>
+          <dd>※お申込時期・内容によっては1～2週間程度かかる場合があります。</dd>
+          <dt>●本人確認書類を撮影される際には、鮮明に撮影いただきますようお願いします。</dt>
+          <dd></dd>
+          <dt>●毎月第2土曜日21:00～翌朝7:00はシステムメンテナンスのためご利用いただけません。</dt>
+          <dd></dd>
+        </dl>
+        <div class="a-margin-t1">
+          <ul class="m-collist m-collist-notes m-collist-notes-mark1">
+            <li>2021年7月1日以降に開設され、2年以上未利用の普通預金口座は未利用口座管理手数料（年間1,320円（税込））がかかる場合があります。<br>&gt;<a href="https://www.bk.mufg.jp/kouza/futsu/miriyo/index.html">くわしくはこちら</a></li>
+          </ul>
+        </div>
+      </div>
+
+          <div class="app-banner -content">
+            <div class="app-box">
+              <h2><img src="img/app-title_pc_02.png" alt="アプリでカンタン口座開設" class="pc_sp"></h2>
+              <div class="app-content clearfix">
+                <p class="lead"><img src="img/app-lead_pc_02.png" alt="ダウンロードはこちら" class="pc_sp"></p>
+                <div class="app-apple">
+                  <p class="btn"><img src="img/app-qr1.png" alt="App Store QRコード" class="qr"><a id="ios_link" onclick="return gtag_report_conversion('https://itunes.apple.com/jp/app/id1139979990?');" href="https://itunes.apple.com/jp/app/id1139979990?" target="_blank"><img src="img/app-btn-apple.png" alt="Download on the AppStore" class="btn-hover"></a></p>
+                </div>
+                <div class="app-google">
+                  <p class="btn"><img src="img/app-qr2.png" alt="Google Play QRコード" class="qr"><a onclick="return gtag_report_conversion('https://play.google.com/store/apps/details?id=jp.mufg.bk.openaccount.app');" href="https://play.google.com/store/apps/details?id=jp.mufg.bk.openaccount.app" target="_blank"><img src="img/app-btn-google.png" alt="GET IT ON Google Play" class="btn-hover"></a></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="app-text-wrapper">
+            <ul class="m-collist">
+              <li><a href="https://www.bk.mufg.jp/kouza/smartkouza/introduction.html" class="a-ico_arw-r">Webでの開設はこちら</a></li>
+            </ul>
+            <p class="a-fz-s">アプリ・Webでの口座開設は以下に該当する方がご利用いただけます。</p>
+            <p class="a-fz-xs"><span class="a-color-pink">●</span>当行口座をお持ちでない15歳以上の個人の方　<br class="a-sp"><span class="a-color-pink">●</span>国内に居住で日本国籍をお持ちの方　<br class="a-sp"><span class="a-color-pink">●</span>現住所が記載された運転免許証・マイナンバーカードをお持ちの方</p>
+            <ul class="m-collist">
+              <li><a href="https://www.bk.mufg.jp/kouza/order/index.html" class="a-ico_arw-r">アプリ・Webをご利用できない方はこちら</a></li>
+            </ul>
+          </div><!-- /.app-text-wrapper -->
+
+    </section><!-- step -->
+
+    <section class="credit">
+      <h2><img src="img/credit-title_pc_v3.png" alt="さらに　便利なクレジットカードも同時に申し込める！" class="pc_sp"></h2>
+      <div class="credit-box box-largeshopping">
+        <h3 class="cb2"><img src="img/credit-stitle2_pc.png" alt="大きな買い物や海外旅行はクレジットカードで賢く！" class="pc_sp"></h3>
+        <p class="pic"><img src="img/credit-pic2_sp.png" alt="家電のような大きな買い物は分割払いも利用したい。　いつか海外旅行も行きたいから、クレジットカードは1枚ぐらい持っておいた方がいいって聞くけど…" class="pc_sp"></p>
+        <div class="credit-box-inner">
+          <h4><img src="img/credit-box-title2_pc.png" alt="そんなあなたに「ＭＵＦＧカードスマート」" class="pc_sp"></h4>
+          <div class="text">
+            <h5>三菱ＵＦＪカードは、安心と便利を兼ね備えた、<br>
+            メインカードにぴったりの1枚。</h5>
+            <dl class="clearfix">
+              <dt>［特徴１］</dt><dd>セキュリティに配慮し、カード番号や有効期限を裏面化</dd>
+              <dt>［特徴２］</dt><dd>お客さまが不正被害にあわれないよう24時間365日体制でモニタリング。もし被害にあわれても不正に利用されたものと認められた場合は、すみやかに補償<sup>（*3）</sup></dd>
+              <dt>［特徴３］</dt><dd>お支払いは安心・便利なタッチ決済・スマホ決済に対応<sup>（*4）</sup></dd>
+            <dt>［特徴４］</dt><dd>たまったポイントはお好きな商品との交換やキャッシュバックも可能</dd>
+            </dl>
+            <p><span class="big">初年度年会費無料！</span></p>
+            <p>年1回のご利用で翌年度も無料<br>
+            通常年会費1,375円（消費税込）<sup>（*5）</sup><br>
+            ※学生は在学中無料<br>
+            ※三菱ＵＦＪカードは、三菱ＵＦＪニコス（株）が発行するクレジットカードです。</p>
+          </div>
+          <p class="link-btn"><a href="https://www.bk.mufg.jp/tsukau/credit/sagasu/mucard/index.html" target="_blank" class="btn-hover">くわしく見る</a></p>
+        </div>
+      </div>
+    </section><!-- credit -->
+
+    <section class="banner">
+      <p class="banner-link"><a href="https://www.bk.mufg.jp/kouza/lp/comic/index.html?link_id=r_kouza_shinseikatsu_banner5" target="_blank"><img src="img/banner1.png" alt="マンガでわかる！　ミツとユウのスマートな口座活用術　こんなにラクでいいの？ 知っておトクな物語！" class="btn-hover"></a></p>
+      <div class="banner-inner">
+        <h3>プレゼントキャンペーン実施中</h3>
+        <p class="banner-link"><a href="https://www.bk.mufg.jp/info_cam/202110_debit/index1.html?link_id=r_kouza_debitcp_lp4" target="_blank"><img src="img/banner10.jpg" alt="三菱ＵＦＪデビット新規ご入会者限定キャンペーンもれなく最大1000円プレゼント" class="btn-hover"></a></p>
+        <p class="banner-link"><a href="https://www.bk.mufg.jp/tsukau/credit/cp/mucard/index.html" target="_blank"><img src="img/banner9.jpg" alt="誕生！三菱ＵＦＪカード ご入会特典！もれなく最大11,000円分！" class="btn-hover"></a></p>
+      </div>
+    </section><!-- credit -->
+    
+    <aside class="aside">
+      <div class="aside_inner">
+        <ol class="m-collist m-collist-notes m-collist-notes-num2 m-collist-left">
+          <li>2018年3月末時点の三菱ＵＦＪ銀行ATM・提携金融機関・セブン銀行・ローソン銀行ATM・イーネットATMのATM台数です。</li>
+          <li>三菱ＵＦＪデビットを海外でご利用の際は下記レートで円貨換算します。<br>[JCBデビット]JCBが定める基準レートにJCBが指定した料率（1.6%）と当行所定の海外事務手数料（税込3.05%）を上乗せしたレートで円貨換算します。<br>[VISAデビット]Visaが定める基準レートに当行所定の海外事務手数料（税込3.05%）を上乗せしたレートで円貨換算します。<br>海外でのATMのお引き出しは1回につき110円（税込）の手数料がかかります。別途ATM設置機関所定の自動機手数料が必要な場合があります。</li>
+          <li>第三者によって不正に使⽤されたものと三菱ＵＦＪニコス（株）が認めた場合に適⽤となります。</li>
+          <li>タッチ決済・スマホ決済は、Visa・Mastercard<sub>&reg;</sub>のみ対象です。</li>
+          <li>三菱ＵＦＪカードは初年度年会費無料。翌年度以降も前年度の年間ショッピングご利用1回以上で無料。<br>通常年会費：1,375円(消費税込)<br>※学生は在学中無料</li>
+        </ol>
+        <ol class="m-collist m-collist-notes m-collist-notes-mark1 m-collist-left a-color-red a-margin-t1">
+          <li>「Android」「Google Play」は、Google Inc.の商標または登録商標です。</li>
+          <li>「iPhone」「App Store」は、米国およびその他の国々で登録されたApple Inc.の商標または登録商標です。</li>
+          <li>掲載の画面は全てイメージです。今後予告なく変更となる場合があります。</li>
+        </ol>
+        <p class="a-margin-t1 a-fz-s">
+          その他にご注意いただきたい事項は下記の規定をご参照ください。<br>
+          &gt;<a href="https://www.bk.mufg.jp/tsukau/app/kouza/kitei/index.html" target="_blank">「スマート口座開設」アプリ 利用規定はこちら</a><br>
+          &gt;<a href="https://www.bk.mufg.jp/tsukau/app/kouza/webkitei/index.html" target="_blank">「スマート口座開設」Web 利用規定はこちら</a>
+        </p>
+        <div class="aside_box">
+          <p><strong>三菱ＵＦＪ銀行コールセンター</strong></p>
+          <p class="tel_link"><a href="tel:0120860777"><img src="./img/aside_pc.png" class="w-max-100 pc_sp" alt="0120-860777 受付時間：9:00?21:00"></a></p>
+        </div>
+        <p class="txtright">（2021年10月1日現在）</p>
+      </div>
+    </aside><!-- aside -->
+    
+    <aside class="sns">
+      <p>
+        <a href="http://www.facebook.com/share.php?u=https://www.bk.mufg.jp/kouza/lp/shinseikatsu/index.html?banner_id=b433416" onclick="window.open(this.href, 'FBwindow', 'width=650, height=450, menubar=no, toolbar=no, scrollbars=yes'); return false;"><img src="img/icon-facebook.png" alt="facebook" class="btn-hover"></a>
+        <a href="http://twitter.com/share?url=https://www.bk.mufg.jp/kouza/lp/shinseikatsu/index.html?banner_id=b433415&amp;text=%E6%9D%A5%E5%BA%97%E4%B8%8D%E8%A6%81%EF%BC%81%E3%80%8C%E3%82%B9%E3%83%9E%E3%83%BC%E3%83%88%E5%8F%A3%E5%BA%A7%E9%96%8B%E8%A8%AD%E3%80%8D%E3%81%AA%E3%82%89%E3%82%B9%E3%83%9E%E3%83%9B%E3%81%A7%E3%82%AB%E3%83%B3%E3%82%BF%E3%83%B3+%23%E5%8F%A3%E5%BA%A7%E9%96%8B%E8%A8%AD%EF%BC%81+%23%E4%B8%89%E8%8F%B1UFJ%E9%8A%80%E8%A1%8C" target="_blank"><img src="img/icon-twitter.png" alt="Twitter" class="btn-hover"></a>
+      </p>
+    </aside><!-- sns -->
+    
+    <section class="kinshoho">
+      <p>株式会社 三菱ＵＦＪ銀行　<span>登録金融機関</span>　関東財務局長（登金）第5号　<span>加入協会</span>　日本証券業協会、一般社団法人 金融先物取引業協会、 一般社団法人 第二種金融商品取引業協会</p>
+    </section><!-- kinshoho -->
+  </div>
+
+</main>
+<!-- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲ コンテンツ ▲▲▲▲▲▲▲▲▲▲▲▲▲▲ --->
+
+<!--// t-footer //-->
+<footer id="js-inc_popup_ft" class="t-footer">
+  <div class="t-footer_bottom-popup">
+    <div class="t-footer_copyright">
+      <div class="t-footer_inner">
+        <p>Copyright &copy; ＭＵＦＧ Bank, Ltd. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+<!--// /t-footer //-->
+<!--// t-pagetop //-->
+<div class="t-pagetop">
+<a href="#wrapper" class="js-scroll">ページトップ</a>
+</div>
+<!--// /t-pagetop //-->
+</div>
+<!--// /t-wrapper //-->
+<div id="load"></div>
+
+<script async src="https://s.yimg.jp/images/listing/tool/cv/ytag.js"></script>
+<script>
+window.yjDataLayer = window.yjDataLayer || [];
+function ytag() { yjDataLayer.push(arguments); }
+ytag({
+  "type":"yss_retargeting",
+  "config": {
+    "yahoo_ss_retargeting_id": "1000274199",
+    "yahoo_sstag_custom_params": {
+    }
+  }
+});
+</script>
+
+<script async src="https://s.yimg.jp/images/listing/tool/cv/ytag.js"></script>
+<script>
+window.yjDataLayer = window.yjDataLayer || [];
+function ytag() { yjDataLayer.push(arguments); }
+ytag({
+  "type":"yjad_retargeting",
+  "config":{
+    "yahoo_retargeting_id": "CH3P3D0Q2O",
+    "yahoo_retargeting_label": "",
+    "yahoo_retargeting_page_type": "",
+    "yahoo_retargeting_items":[
+      {item_id: '', category_id: '', price: '', quantity: ''}
+    ]
+  }
+});
+</script>
+</body>
+</html>
