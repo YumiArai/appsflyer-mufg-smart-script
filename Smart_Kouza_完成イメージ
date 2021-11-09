@@ -26,6 +26,8 @@
 <script src="/shared2019/js/common.js"></script>
 <script src="./js/main.js"></script>
 
+  // ここからAppsFlyer Smart Scriptの大元のスクリプト開始
+  
  <script type="text/javascript">
 'use strict';
 
@@ -243,6 +245,8 @@ function setGenericParameter(afParams, oneLinkParam, searchKey, newParamValue = 
 
   </script>
 
+  // ここから、上で埋めたスクリプトを、LPページのロード時にスタート（初期化）させる指示を開始
+  
 <script type="text/javascript">
     window.onload = function () {
 
@@ -250,7 +254,7 @@ function setGenericParameter(afParams, oneLinkParam, searchKey, newParamValue = 
       const onelinkGenerator =  new window.AF.OneLinkUrlGenerator(
         {oneLinkURL: "https://mufg-kouza.onelink.me/dhBw/",
          pidKeysList: ['pid', 'utm_source'], 
-         pidStaticValue: 'MUFG_LP',   // 受信URLに pid, utm_source パラメが存在しない場合、メディアソース名の固定値として使用します。必要に応じて変更してください。
+         pidStaticValue: 'MUFG_KOUZA_LP',   // 受信URLに pid, utm_source パラメが存在しない場合、メディアソース名の固定値として使用します。必要に応じて変更してください。
          campaignKeysList: ['c', 'utm_campaign'],
          campaignStaticValue: 'LP_TOP'   // 受信URLに c, utm_campaign パラメが存在しない場合、キャンペーン名の固定値として使用します。必要に応じて変更してください。
       });
@@ -424,8 +428,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <p class="btn"><img src="img/app-qr1.png" alt="App Store QRコード" class="qr"><a id="ios_link" onclick="return gtag_report_conversion('https://itunes.apple.com/jp/app/id1139979990?');" href="https://itunes.apple.com/jp/app/id1139979990?" target="_blank"><img src="img/app-btn-apple.png" alt="Download on the AppStore" class="btn-hover"></a></p>
           </div>
           <div class="app-google">
-            <p class="btn"><img src="img/app-qr2.png" alt="Google Play QRコード" class="qr"><a id="andrd_link" onclick="return gtag_report_conversion('https://
-            com/store/apps/details?id=jp.mufg.bk.openaccount.app');" href="https://play.google.com/store/apps/details?id=jp.mufg.bk.openaccount.app" target="_blank"><img src="img/app-btn-google.png" alt="GET IT ON Google Play" class="btn-hover"></a></p>
+            <p class="btn"><img src="img/app-qr2.png" alt="Google Play QRコード" class="qr"><a id="andrd_link" onclick="return gtag_report_conversion('https://play.google.com/store/apps/details?id=jp.mufg.bk.openaccount.app');" href="https://play.google.com/store/apps/details?id=jp.mufg.bk.openaccount.app" target="_blank"><img src="img/app-btn-google.png" alt="GET IT ON Google Play" class="btn-hover"></a></p>
           </div>
         </div>
       </div>
