@@ -656,7 +656,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                   <p class="btn"><img src="img/app-qr1.png" alt="App Store QRコード" class="qr"><a id="ios_link" onclick="return gtag_report_conversion('https://itunes.apple.com/jp/app/id1139979990?');" href="https://itunes.apple.com/jp/app/id1139979990?" target="_blank"><img src="img/app-btn-apple.png" alt="Download on the AppStore" class="btn-hover"></a></p>
                 </div>
                 <div class="app-google">
-                  <p class="btn"><img src="img/app-qr2.png" alt="Google Play QRコード" class="qr"><a onclick="return gtag_report_conversion('https://play.google.com/store/apps/details?id=jp.mufg.bk.openaccount.app');" href="https://play.google.com/store/apps/details?id=jp.mufg.bk.openaccount.app" target="_blank"><img src="img/app-btn-google.png" alt="GET IT ON Google Play" class="btn-hover"></a></p>
+                  <p class="btn"><img src="img/app-qr2.png" alt="Google Play QRコード" class="qr"><a id="andrd_link" onclick="return gtag_report_conversion('https://play.google.com/store/apps/details?id=jp.mufg.bk.openaccount.app');" href="https://play.google.com/store/apps/details?id=jp.mufg.bk.openaccount.app" target="_blank"><img src="img/app-btn-google.png" alt="GET IT ON Google Play" class="btn-hover"></a></p>
                 </div>
               </div>
             </div>
@@ -717,7 +717,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                   <p class="btn"><img src="img/app-qr1.png" alt="App Store QRコード" class="qr"><a id="ios_link" onclick="return gtag_report_conversion('https://itunes.apple.com/jp/app/id1139979990?');" href="https://itunes.apple.com/jp/app/id1139979990?" target="_blank"><img src="img/app-btn-apple.png" alt="Download on the AppStore" class="btn-hover"></a></p>
                 </div>
                 <div class="app-google">
-                  <p class="btn"><img src="img/app-qr2.png" alt="Google Play QRコード" class="qr"><a onclick="return gtag_report_conversion('https://play.google.com/store/apps/details?id=jp.mufg.bk.openaccount.app');" href="https://play.google.com/store/apps/details?id=jp.mufg.bk.openaccount.app" target="_blank"><img src="img/app-btn-google.png" alt="GET IT ON Google Play" class="btn-hover"></a></p>
+                  <p class="btn"><img src="img/app-qr2.png" alt="Google Play QRコード" class="qr"><a id="andrd_link" onclick="return gtag_report_conversion('https://play.google.com/store/apps/details?id=jp.mufg.bk.openaccount.app');" href="https://play.google.com/store/apps/details?id=jp.mufg.bk.openaccount.app" target="_blank"><img src="img/app-btn-google.png" alt="GET IT ON Google Play" class="btn-hover"></a></p>
                 </div>
               </div>
             </div>
@@ -782,7 +782,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                   <p class="btn"><img src="img/app-qr1.png" alt="App Store QRコード" class="qr"><a id="ios_link" onclick="return gtag_report_conversion('https://itunes.apple.com/jp/app/id1139979990?');" href="https://itunes.apple.com/jp/app/id1139979990?" target="_blank"><img src="img/app-btn-apple.png" alt="Download on the AppStore" class="btn-hover"></a></p>
                 </div>
                 <div class="app-google">
-                  <p class="btn"><img src="img/app-qr2.png" alt="Google Play QRコード" class="qr"><a onclick="return gtag_report_conversion('https://play.google.com/store/apps/details?id=jp.mufg.bk.openaccount.app');" href="https://play.google.com/store/apps/details?id=jp.mufg.bk.openaccount.app" target="_blank"><img src="img/app-btn-google.png" alt="GET IT ON Google Play" class="btn-hover"></a></p>
+                  <p class="btn"><img src="img/app-qr2.png" alt="Google Play QRコード" class="qr"><a id="andrd_link" onclick="return gtag_report_conversion('https://play.google.com/store/apps/details?id=jp.mufg.bk.openaccount.app');" href="https://play.google.com/store/apps/details?id=jp.mufg.bk.openaccount.app" target="_blank"><img src="img/app-btn-google.png" alt="GET IT ON Google Play" class="btn-hover"></a></p>
                 </div>
               </div>
             </div>
@@ -851,7 +851,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                   <p class="btn"><img src="img/app-qr1.png" alt="App Store QRコード" class="qr"><a id="ios_link" onclick="return gtag_report_conversion('https://itunes.apple.com/jp/app/id1139979990?');" href="https://itunes.apple.com/jp/app/id1139979990?" target="_blank"><img src="img/app-btn-apple.png" alt="Download on the AppStore" class="btn-hover"></a></p>
                 </div>
                 <div class="app-google">
-                  <p class="btn"><img src="img/app-qr2.png" alt="Google Play QRコード" class="qr"><a onclick="return gtag_report_conversion('https://play.google.com/store/apps/details?id=jp.mufg.bk.openaccount.app');" href="https://play.google.com/store/apps/details?id=jp.mufg.bk.openaccount.app" target="_blank"><img src="img/app-btn-google.png" alt="GET IT ON Google Play" class="btn-hover"></a></p>
+                  <p class="btn"><img src="img/app-qr2.png" alt="Google Play QRコード" class="qr"><a id="andrd_link" onclick="return gtag_report_conversion('https://play.google.com/store/apps/details?id=jp.mufg.bk.openaccount.app');" href="https://play.google.com/store/apps/details?id=jp.mufg.bk.openaccount.app" target="_blank"><img src="img/app-btn-google.png" alt="GET IT ON Google Play" class="btn-hover"></a></p>
                 </div>
               </div>
             </div>
