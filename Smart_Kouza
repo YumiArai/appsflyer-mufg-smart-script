@@ -1,0 +1,29 @@
+ <script type="text/javascript">
+    window.onload = function () {
+
+      const onelinkGenerator =  new window.AF.OneLinkUrlGenerator(
+        {oneLinkURL: "https://mufg-kouza.onelink.me/dhBw/",
+         pidKeysList: ['pid', 'utm_source'], 
+         pidStaticValue: 'MUFG_LP',   // 受信URLに pid, utm_source パラメが存在しない場合、メディアソース名の固定値として使用します。必要に応じて変更してください。
+         campaignKeysList: ['c', 'utm_campaign'],
+         campaignStaticValue: 'LP_TOP'   // 受信URLに c, utm_campaign パラメが存在しない場合、キャンペーン名の固定値として使用します。必要に応じて変更してください。
+      });
+      
+      onelinkGenerator.setAdset("af_adset");
+      onelinkGenerator.setAd("af_ad");
+      onelinkGenerator.setCustomParameter("af_prt", "af_prt");
+      onelinkGenerator.setCustomParameter("af_dp", "af_dp");
+      onelinkGenerator.setCustomParameter("is_retargeting", "is_retargeting");
+
+      
+      
+      const url = onelinkGenerator.generateUrl();
+
+      // onelink is generated
+        if (url) {
+        document.querySelectorAll("#andrd_link, #ios_link").forEach((e) => {
+            e.setAttribute('href', url);
+      }
+
+    };
+  </script>
