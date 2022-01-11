@@ -1,3 +1,14 @@
+以下スクリプトで引き渡すパラメータリスト：
+    メディアソース：pid, utm_source
+    キャンペーン：c, utm_campaign
+    広告セット：af_adset
+    広告：af_ad
+    代理店識別子：af_prt
+    ディープリンク（URIスキーム）：af_dp
+    既存ユーザー：is_retargeting（再インストール計測OK）
+    チャネル名：af_channel
+
+
 <script type="text/javascript">
     window.onload = function () {
 
@@ -12,6 +23,7 @@
       
       onelinkGenerator.setAdset("af_adset");
       onelinkGenerator.setAd("af_ad");
+      onelinkGenerator.setAdset("af_channel");
       onelinkGenerator.setCustomParameter("af_prt", "af_prt");
       onelinkGenerator.setCustomParameter("af_dp", "af_dp");
       onelinkGenerator.setCustomParameter("is_retargeting", "is_retargeting");
