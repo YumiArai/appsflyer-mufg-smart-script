@@ -34,7 +34,6 @@
         campaign: campaign,
         googleClickIdKey: googleClickIdKey,
         afSub2: afSub2,
-        deepLinkValue: deepLinkValue,
         afCustom: [
           custom1,
           custom2,
