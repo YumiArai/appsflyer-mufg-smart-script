@@ -1,7 +1,7 @@
-<script>
-
+<script type="text/javascript">
+  window.onload = function () {
 // SS V2スクリプトを初期化
-var oneLinkURL = "https://engmntqa.onelink.me/LtRd/";  // OneLinkテンプレートと置き換え
+var oneLinkURL = "https://direct-app.onelink.me/hNTg/";  // OneLinkテンプレートと置き換え
 var mediaSource = {keys: ["pid", "utm_source"], defaultValue: "MUFG_LP"};     // メディアソース名として使用したいパラメータを指定し、そのパラメータがが受信URLにない場合、 defaultValue: でデフォルト値を指定します
 var campaign = {keys: ["C", "utm_campaign"], defaultValue: "MUFG_LP_TOP"};    // キャンペーン名として使用したいパラメータを指定し、そのパラメータがが受信URLにない場合、 defaultValue: でデフォルト値を指定します
 var adSet = {keys: ["af_adset"]};    // 受信URLに広告セットパラメ (af_adset=) が含まれる場合、そのまま送信URLにaf_adsetとして引き渡します。ない場合は無視
@@ -33,13 +33,10 @@ var result = window.AF_SMART_SCRIPT.generateOneLinkURL({
   }
 })
  // onelink is generated
-        if (url) {
-          document.querySelectorAll(".app-btn").forEach(function(e) {  // Yumi Memo: document = webpage          
-            e.setAttribute('href', url);
-            e.onclick = function() {gtag_report_conversion(url);};
-          });
-        }
-
-
+   if (result && result.clickURL) {
+      document.querySelectorAll(".app-btn").forEach(function (e) {  // Yumi Memo: document = webpage          
+        e.setAttribute('href', result.clickURL);
+      });
     };
+  }
   </script>
