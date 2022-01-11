@@ -32,6 +32,8 @@
       oneLinkURL,
       afParameters: {
         mediaSource: mediaSource,
+        adSet: adSet,
+        ad: ad,
         campaign: campaign,
         googleClickIdKey: googleClickIdKey,
         afSub2: afSub2,
