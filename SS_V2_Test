@@ -1,0 +1,32 @@
+// SS V2スクリプトを初期化
+var oneLinkURL = "https://engmntqa.onelink.me/LtRd/";  // OneLinkテンプレートと置き換え
+var mediaSource = {keys: ["pid", "utm_source"], defaultValue: "MUFG_LP"};     // メディアソース名として使用したいパラメータを指定し、そのパラメータがが受信URLにない場合、 defaultValue: でデフォルト値を指定します
+var campaign = {keys: ["C", "utm_campaign"], defaultValue: "MUFG_LP_TOP"};    // キャンペーン名として使用したいパラメータを指定し、そのパラメータがが受信URLにない場合、 defaultValue: でデフォルト値を指定します
+var adSet = {keys: ["af_adset"]};    // 受信URLに広告セットパラメ (af_adset=) が含まれる場合、そのまま送信URLにaf_adsetとして引き渡します。ない場合は無視
+var ad = {keys: ["af_ad"]};    // 受信URLに広告セットパラメ (af_adset=) が含まれる場合、そのまま送信URLにaf_adsetとして引き渡します。ない場合は無視
+var googleClickIdKey = "af_sub4";
+var afSub2 = {keys: ["fbclid"], defaultValue: "no_fbclid"};
+var channel = {keys: ["af_channel"]};
+var deepLinkValue = {keys: ["af_dp"], defaultValue: "TOP"};
+var afSub3 = {keys: ["promo"]};
+var custom1 = {paramKey: "af_prt", keys: ["af_prt"]};
+var custom2 = {paramKey: "is_retargeting", keys: ["is_retargeting"]};
+
+
+
+//　関数は、window.AF_SMART_SCRIPT と呼ばれるグロ0バルパラメーターでウィンドウオブジェクトに埋め込まれます。
+//Onelink URL is generated
+var result = window.AF_SMART_SCRIPT.generateOneLinkURL({
+  oneLinkURL,
+  afParameters:{
+    mediaSource: mediaSource,
+    campaign: campaign,
+    googleClickIdKey: googleClickIdKey
+    afSub2: afSub2,
+    deepLinkValue: deepLinkValue,
+     afCustom: [
+            custom1,
+            custom2,
+            ]
+  }
+})
