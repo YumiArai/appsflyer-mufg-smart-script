@@ -9,12 +9,17 @@
     var ad = { keys: ["af_ad"] };    // 受信URLに広告セットパラメ (af_adset=) が含まれる場合、そのまま送信URLにaf_adsetとして引き渡します。ない場合は無視
     var googleClickIdKey = "af_sub4";
     var afSub2 = { keys: ["fbclid", "yclid"], defaultValue: "no_fbclid" };
-    var channel = { keys: ["af_channel", "utm_medium"] };
+    var channel = { keys: ["af_channel"]};
     var deepLinkValue = { keys: ["af_dp"], defaultValue: "TOP" };
-    var afSub3 = { keys: ["promo"] };
     var custom1 = { paramKey: "af_prt", keys: ["af_prt"] };
     var custom2 = { paramKey: "is_retargeting", keys: ["is_retargeting"] };
-
+    var custom3 = {paramKey: "af_siteid", keys: ["af_siteid"]};
+    var custom4 = {paramKey: "af_click_lookback", keys: ["af_click_lookback"]};
+    var custom5 = {paramKey: "idfa", keys: ["idfa"]};
+    var custom6 = {paramKey: "af_ua", keys: ["af_ua"]};
+    var custom7 = {paramKey: "af_lang", keys: ["af_lang"]};
+    var custom8 = {paramKey: "af_ip", keys: ["af_ip"]};
+    var custom9 = {paramKey: "af_media_type", keys: ["af_media_type"]};
 
 
     //　関数は、window.AF_SMART_SCRIPT と呼ばれるグローバルパラメーターでウィンドウオブジェクトに埋め込まれます。
@@ -30,7 +35,14 @@
         afCustom: [
           custom1,
           custom2,
-        ]
+          custom3,
+          custom4,
+          custom5,
+          custom6,
+          custom7,
+          custom8,
+          custom9,
+]
       }
     })
     // onelink is generated
