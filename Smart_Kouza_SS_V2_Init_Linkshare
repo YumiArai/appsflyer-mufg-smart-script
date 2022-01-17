@@ -13,7 +13,7 @@
     var afSub2 = { keys: ["fbclid", "yclid"], defaultValue: "no_clid" };
     var afSub1 = { keys: ["sesid"], defaultValue: "no_sesid" };
     var afSub3 = { keys: ["aid"], defaultValue: "no_aid" };
-    var channel = { keys: ["af_channel"] };
+    var channel = { keys: ["af_channel", "utm_medium"] };
     var custom1 = { paramKey: "af_prt", keys: ["af_prt"] };
     var custom2 = { paramKey: "is_retargeting", keys: ["is_retargeting"] };
     var custom3 = { paramKey: "af_prt", keys: ["af_prt"] };
@@ -36,6 +36,7 @@
         mediaSource: mediaSource,
         adSet: adSet,
         ad: ad,
+        channel,
         campaign: campaign,
         googleClickIdKey: googleClickIdKey,
         afSub2: afSub2,
