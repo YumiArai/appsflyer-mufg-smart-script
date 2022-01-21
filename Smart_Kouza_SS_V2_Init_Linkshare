@@ -25,6 +25,7 @@
     var custom9 = { paramKey: "af_lang", keys: ["af_lang"] };
     var custom10 = { paramKey: "af_ip", keys: ["af_ip"] };
     var custom11 = { paramKey: "af_media_type", keys: ["af_media_type"] };
+    var custom12 = { paramKey: "af_web_dp", keys: ["af_web_dp"] };
 
 
 
@@ -53,7 +54,8 @@
           custom8,
           custom9,
           custom10,
-          custom11
+          custom11,
+          custom12
 
 
 ]
