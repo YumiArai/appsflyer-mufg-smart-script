@@ -4,11 +4,11 @@
 
     // SS V2スクリプトを初期化
     var oneLinkURL = "https://mufg-kouza.onelink.me/dhBw/";  // OneLinkテンプレートと置き換え
-    var mediaSource = { keys: ["pid", "utm_source"], defaultValue: "Docomo_Media" };     // メディアソース名として使用したいパラメータを指定し、そのパラメータがが受信URLにない場合、'Docomo_Media'をデフォルト値として使用
-    var campaign = { keys: ["c", "utm_campaign"], defaultValue: "Organic" };    // キャンペーン名として使用したいパラメータを指定し、そのパラメータがが受信URLにない場合、'Organic'をデフォルト値として使用
+    var mediaSource = { keys: ["pid"], defaultValue: "Docomo_Media" };     // メディアソース名として使用したいパラメータを指定し、そのパラメータがが受信URLにない場合、'Docomo_Media'をデフォルト値として使用
+    var campaign = { keys: ["c"], defaultValue: "Organic" };    // キャンペーン名として使用したいパラメータを指定し、そのパラメータがが受信URLにない場合、'Organic'をデフォルト値として使用
     var adSet = { keys: ["af_adset"] };    // 受信URLに広告セットパラメ (af_adset=) が含まれる場合、そのまま送信URLにaf_adsetとして引き渡します。ない場合は無視
     var ad = { keys: ["af_ad"] };    // 受信URLに広告セットパラメ (af_adset=) が含まれる場合、そのまま送信URLにaf_adsetとして引き渡します。ない場合は無視
-    var channel = { keys: ["af_channel", "utm_medium"] };
+    var channel = { keys: ["af_channel"] };
     var custom1 = { paramKey: "af_prt", keys: ["af_prt"] };
     var custom2 = { paramKey: "is_retargeting", keys: ["is_retargeting"] };
     var custom3 = { paramKey: "af_prt", keys: ["af_prt"] };
