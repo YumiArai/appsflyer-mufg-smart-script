@@ -23,9 +23,8 @@
     var custom7 = { paramKey: "idfa", keys: ["idfa"] };
     var custom8 = { paramKey: "af_media_type", keys: ["af_media_type"] };
     var custom9 = { paramKey: "af_dp", keys: ["af_dp"] };
-    var custom10 = { paramKey: "af_web_dp", "af_r", keys: ["af_web_dp"] };
-    var custom11 = { paramKey: "af_r", keys: ["af_r"] };
-    var custom12 = { paramKey: "advertising_id", keys: ["advertising_id"] };
+    var custom10 = { paramKey: "af_r", keys: ["af_r"] };
+    var custom11 = { paramKey: "advertising_id", keys: ["advertising_id"] };
 
 
 
@@ -55,7 +54,6 @@
           custom9,
           custom10,
           custom11,
-          custom12
 
 
 ]
