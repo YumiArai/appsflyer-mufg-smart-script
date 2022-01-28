@@ -1,0 +1,73 @@
+
+<script type="text/javascript">
+  window.onload = function () {
+
+
+    // SS V2スクリプトを初期化
+    var oneLinkURL = "https://mufg-kouza.onelink.me/dhBw/";  // OneLinkテンプレートと置き換え
+    var mediaSource = { keys: ["pid", "utm_source"], defaultValue: "hp" };     // メディアソース名として使用したいパラメータを指定し、そのパラメータがが受信URLにない場合、'hp'をデフォルト値として使用
+    var campaign = { keys: ["c", "utm_campaign"], defaultValue: "brand_k" };    // キャンペーン名として使用したいパラメータを指定し、そのパラメータがが受信URLにない場合、'brand_kc'をデフォルト値として使用
+    var adSet = { keys: ["af_adset"] };    // 受信URLに広告セットパラメ (af_adset=) が含まれる場合、そのまま送信URLにaf_adsetとして引き渡します。ない場合は無視
+    var ad = { keys: ["af_ad"] };    // 受信URLに広告セットパラメ (af_adset=) が含まれる場合、そのまま送信URLにaf_adsetとして引き渡します。ない場合は無視
+    var googleClickIdKey = "af_sub4";
+    var afSub2 = { keys: ["fbclid", "yclid"], defaultValue: "no_clid" };
+    var afSub1 = { keys: ["sesid"], defaultValue: "no_sesid" };
+    var afSub3 = { keys: ["aid"], defaultValue: "no_aid" };
+    var channel = { keys: ["af_channel", "utm_medium"] };
+    var custom1 = { paramKey: "af_prt", keys: ["af_prt"] };
+    var custom2 = { paramKey: "is_retargeting", keys: ["is_retargeting"] };
+    var custom3 = { paramKey: "af_prt", keys: ["af_prt"] };
+    var custom4 = { paramKey: "af_siteid", keys: ["af_siteid"] };
+    var custom5 = { paramKey: "af_click_lookback", keys: ["af_click_lookback"] };
+    var custom6 = { paramKey: "clickid", keys: ["clickid"] };
+    var custom7 = { paramKey: "idfa", keys: ["idfa"] };
+    var custom8 = { paramKey: "af_ua", keys: ["af_ua"] };
+    var custom9 = { paramKey: "af_lang", keys: ["af_lang"] };
+    var custom10 = { paramKey: "af_ip", keys: ["af_ip"] };
+    var custom11 = { paramKey: "af_media_type", keys: ["af_media_type"] };
+    var custom12 = { paramKey: "af_web_dp", keys: ["af_web_dp"] };
+    var custom13 = { paramKey: "TRAINID", keys: ["TRAINID"] };
+    var custom14 = { paramKey: "GYO_CD", keys: ["GYO_CD"] };
+
+    //Onelink URL is generated
+    var result = window.AF_SMART_SCRIPT.generateOneLinkURL({
+      oneLinkURL,
+      afParameters: {
+        mediaSource: mediaSource,
+        adSet: adSet,
+        ad: ad,
+        channel,
+        campaign: campaign,
+        googleClickIdKey: googleClickIdKey,
+        afSub2: afSub2,
+        afSub1: afSub1,
+        afSub3: afSub3,
+        afCustom: [
+          custom1,
+          custom2,
+          custom3,          
+          custom4,
+          custom5,
+          custom6,
+          custom7,
+          custom8,
+          custom9,
+          custom10,
+          custom11,
+          custom12,
+          custom13,
+          custom14
+        
+
+
+]
+      }
+    })
+    // onelink is generated
+    if (result && result.clickURL) {
+      document.querySelectorAll(".final_url").forEach(function (e) {  // Yumi Memo: document = webpage          
+        e.setAttribute('href', result.clickURL);
+      });
+    };
+  }
+</script>
