@@ -25,6 +25,8 @@
     var custom9 = { paramKey: "af_dp", keys: ["af_dp"] };
     var custom10 = { paramKey: "af_r", keys: ["af_r"] };
     var custom11 = { paramKey: "advertising_id", keys: ["advertising_id"] };
+    var custom12 = { paramKey: "TRAINID", keys: ["TRAINID"] };
+    var custom13 = { paramKey: "GYO_CD", keys: ["GYO_CD"] };
 
 
 
@@ -54,6 +56,8 @@
           custom9,
           custom10,
           custom11,
+          custom12,
+          custom13
 
 
 ]
