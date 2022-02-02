@@ -15,14 +15,14 @@
     var custom4 = { paramKey: "af_siteid", keys: ["af_siteid"] };
     var custom5 = { paramKey: "af_web_dp", keys: ["af_web_dp"] };
 
-    //Onelink URL is generated
+    //最終Onelink URLを作成
     var result = window.AF_SMART_SCRIPT.generateOneLinkURL({
       oneLinkURL,
       afParameters: {
         mediaSource: mediaSource,
         adSet: adSet,
         ad: ad,
-        channel,
+        channel: channel,
         campaign: campaign,
         afCustom: [
           custom1,
@@ -33,7 +33,7 @@
 ]
       }
     })
-    // onelink is generated
+    // 作成されたOneLink URLを、ページ内のどのaタグと置き換えるかを指示（ID, クラスなど）
     if (result && result.clickURL) {
       document.querySelectorAll(".final_url").forEach(function (e) {  // Yumi Memo: document = webpage          
         e.setAttribute('href', result.clickURL);
