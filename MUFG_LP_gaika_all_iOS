@@ -1,0 +1,55 @@
+
+
+<script type="text/javascript">
+  window.onload = function () {
+
+
+    // SS V2スクリプトを初期化
+    var oneLinkURL = "https://direct-app.onelink.me/hNTg/";  // 施策に使用するOneLinkテンプレートと置き換え
+    var mediaSource = { keys: ["pid", "utm_source"], defaultValue: "MUFG_LP" };     // メディアソース名として使用したいパラメータを指定し、そのパラメータがが受信URLにない場合、 defaultValue: でデフォルト値を指定します
+    var campaign = { keys: ["c", "utm_campaign"], defaultValue: "MUFG_LP_gaika_all" };    // キャンペーン名として使用したいパラメータを指定し、そのパラメータがが受信URLにない場合、 defaultValue: でデフォルト値を指定します
+    var adSet = { keys: ["af_adset", "utm_content"] };    // 受信URLに広告セットパラメ (af_adset or utm_content) が含まれる場合、そのまま送信URLにaf_adsetとして引き渡します。ない場合は無視
+    var ad = { keys: ["af_ad", "utm_term"] };    // 受信URLに広告セットパラメ (af_adset=) が含まれる場合、そのまま送信URLにaf_adsetとして引き渡します。ない場合は無視
+    var googleClickIdKey = "af_sub1";
+    var afSub2 = { keys: ["fbclid", "yclid"], defaultValue: "no_clid" };
+    var channel = { keys: ["af_channel", "utm_medium"] };
+    var custom1 = { paramKey: "af_prt", keys: ["af_prt"] };
+    var custom2 = { paramKey: "is_retargeting", keys: ["is_retargeting"], defaultValue: "true" };
+    var custom3 = { paramKey: "af_click_lookback", keys: ["af_click_lookback"] };
+    var custom4 = { paramKey: "idfa", keys: ["idfa"] };
+    var custom5 = { paramKey: "af_dp", keys: ["af_dp"], defaultValue: "jp.mufg.bk.applisp.01%3A%2F%2FAS08_seamless%2F%3FGYO_CD%3D02" };
+    var custom6 = { paramKey: "af_r", keys: ["af_r"], defaultValue: "https%3A%2F%2Fentry11.bk.mufg.jp%2Fibg%2Fdfw%2FAPLIN%2Floginib%2Flogin%3F_TRANID%3DAG004_001%26GYO_CD%3D02"};
+    var custom7 = { paramKey: "advertising_id", keys: ["advertising_id"] };
+    var custom8 = { paramKey: "TRAINID", keys: ["TRAINID"] };
+    var custom9 = { paramKey: "GYO_CD", keys: ["GYO_CD"] };
+
+
+    var result = window.AF_SMART_SCRIPT.generateOneLinkURL({
+      oneLinkURL,
+      afParameters: {
+        mediaSource: mediaSource,
+        adSet: adSet,
+        ad: ad,
+        channel,
+        campaign: campaign,
+        googleClickIdKey: googleClickIdKey,
+        afSub2: afSub2,
+        afCustom: [
+          custom1,
+          custom2,
+          custom3,          
+          custom4,
+          custom5,
+          custom6,
+          custom7,
+          custom8,
+          custom9]      }    })
+
+// onelink is generated
+    if (result && result.clickURL) {
+      document.querySelectorAll(".final_url_ios").forEach(function (e) {  // 生成された最終URLをLP内の aタグのどのリンクと置き換えるのか、指示してください。       
+        e.setAttribute('href', result.clickURL);
+      });
+    };
+  }
+</script>
