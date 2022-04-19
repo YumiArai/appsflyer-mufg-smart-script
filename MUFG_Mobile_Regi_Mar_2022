@@ -19,7 +19,7 @@
 
 //　上で定義されたパラメータマッチングリストを基にOneLinkを生成
     var result = window.AF_SMART_SCRIPT.generateOneLinkURL({
-      oneLinkURL,
+      oneLinkURL: oneLinkURL,
       afParameters: {
         mediaSource: mediaSource,
         adSet: adSet,
