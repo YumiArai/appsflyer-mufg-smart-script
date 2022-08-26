@@ -8,14 +8,14 @@
     var mediaSource = { keys: ["pid", "utm_source"], defaultValue: "lp_a_cta1" };     // メディアソース名として使用したいパラメータを指定し、そのパラメータがが受信URLにない場合、'hp'をデフォルト値として使用
     var campaign = { keys: ["c", "utm_campaign"], defaultValue: "kouza_lp_a" };    // キャンペーン名として使用したいパラメータを指定し、そのパラメータがが受信URLにない場合、'brand_kc'をデフォルト値として使用
     var adSet = { keys: ["af_adset", "utm_content"] };    // 受信URLにaf_adset or utm_content が含まれる場合、そのまま送信URLにaf_adsetとして引き渡します。ない場合は無視
-    var ad = { keys: ["af_ad", defaultValue: "cta_A"] };    // 受信URLに広告セットパラメ (af_adset=) が含まれる場合、そのまま送信URLにaf_adsetとして引き渡します。ない場合はcta_Aを使用します。
+    var ad = { keys: ["af_ad"], defaultValue: "cta_A" };    // 受信URLに広告セットパラメ (af_adset=) が含まれる場合、そのまま送信URLにaf_adsetとして引き渡します。ない場合はcta_Aを使用します。
     var googleClickIdKey = "af_sub4";
     var afSub2 = { keys: ["fbclid", "yclid"], defaultValue: "no_clid" };
     var afSub1 = { keys: ["sesid"], defaultValue: "no_sesid" };
     var afSub3 = { keys: ["aid"], defaultValue: "no_aid" };
     var channel = { keys: ["af_channel", "utm_medium"] };
     var custom1 = { paramKey: "af_prt", keys: ["af_prt"] };
-    var custom2 = { paramKey: "is_retargeting", keys: ["is_retargeting"] };
+    var custom2 = { paramKey: "is_retargeting", keys: ["is_retargeting"], defaultValue: "true" };
     var custom3 = { paramKey: "af_prt", keys: ["af_prt"] };
     var custom4 = { paramKey: "af_siteid", keys: ["af_siteid"] };
     var custom5 = { paramKey: "af_click_lookback", keys: ["af_click_lookback"] };
@@ -65,7 +65,7 @@
     })
     // onelink is generated
     if (result && result.clickURL) {
-      document.querySelectorAll(".cta_1").forEach(function (e) {  // Yumi Memo: document = webpage          
+      document.querySelectorAll("#cta_1").forEach(function (e) {  // Yumi Memo: document = webpage          
         e.setAttribute('href', result.clickURL);
       });
     };
