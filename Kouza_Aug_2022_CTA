@@ -7,7 +7,7 @@
     var oneLinkURL = "https://mufg-kouza.onelink.me/dhBw/";  // OneLinkテンプレートと置き換え
     var mediaSource = { keys: ["pid", "utm_source"], defaultValue: "hp" };     // メディアソース名として使用したいパラメータを指定し、そのパラメータがが受信URLにない場合、'hp'をデフォルト値として使用
     var campaign = { keys: ["c", "utm_campaign"], defaultValue: "kouza_lp_a_cta1" };    // キャンペーン名として使用したいパラメータを指定し、そのパラメータがが受信URLにない場合、'kouza_lp_a_cta1'をデフォルト値として使用
-    var adSet = { keys: ["af_adset", "utm_content"] };    // 受信URLにaf_adset or utm_content が含まれる場合、そのまま送信URLにaf_adsetとして引き渡します。ない場合は無視
+    var adSet = { keys: ["af_adset", "utm_content"], defaultValue: "cta_1" };    // 受信URLにaf_adset or utm_content が含まれる場合、そのまま送信URLにaf_adsetとして引き渡します。ない場合は無視
     var ad = { keys: ["af_ad"], defaultValue: "cta_A" };    // 受信URLに広告セットパラメ (af_adset=) が含まれる場合、そのまま送信URLにaf_adsetとして引き渡します。ない場合はcta_Aを使用します。
     var googleClickIdKey = "af_sub4";
     var afSub2 = { keys: ["fbclid", "yclid"], defaultValue: "no_clid" };
